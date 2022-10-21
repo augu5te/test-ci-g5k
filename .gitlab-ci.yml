@@ -32,7 +32,7 @@ deploy-nxc:
     - NXC_MACHINE_FILE="${OAR_O_WORKDIR}/var/NXC_OAR_${NXC_OAR_JOB_ID}.stdout"
     - echo $NXC_MACHINE_FILE
     # test if there is enough nodes
-    - test $(wc -l < $NXC_MACHINE_FILE) -ge $MIN_NB_NODE || echo "Not enough nodes" && false  
+    - test $(wc -l < $NXC_MACHINE_FILE) -ge $MIN_NB_NODE
     - echo $NXC_MACHINE_FILE && cat $NXC_MACHINE_FILE
     - cd $CI_PROJECT_DIR/$NXC_COMPO
     # restore build dir 
