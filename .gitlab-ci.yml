@@ -8,13 +8,14 @@ build-nxc:
   tags:
     - g5k
   script:
+    - NXC_COMPO=nxc
     - nix --version
     - nxc --version
-    - cd $CI_PROJECT_DIR/nxc
+    - cd $CI_PROJECT_DIR/$NXC_COMPO
     - nxc build -f g5k-nfs-store
     - pwd
     - ls -al
-    - cp -a nxc/build $CI_PROJECT_DIR/../../../../../var/tmp/build_$CI_COMMIT_SHORT_SHA
+    - cp -a build $CI_PROJECT_DIR/../../../../../var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
   artifacts:
     paths:
       - nxc/build/*
@@ -27,19 +28,16 @@ deploy-nxc:
   tags:
     - g5k
   script:
-    - echo $CI_PROJECT_DIR
+    - NXC_COMPO=nxc
     - VAR_DIR=$CI_PROJECT_DIR/../../../../../var
     - echo $VAR_DIR
-    - cat $VAR_DIR/NXC_OAR_JOB_ID
     - NXC_OAR_JOB_ID=$(cat $VAR_DIR/NXC_OAR_JOB_ID)
     - echo $NXC_OAR_JOB_ID
-    #- NXC_MACHINE_FILE="${VAR_DIR}/NXC_OAR_${NXC_OAR_JOB_ID}.stdout"
     - NXC_MACHINE_FILE=$VAR_DIR/NXC_OAR_$(cat $VAR_DIR/NXC_OAR_JOB_ID).stdout
     - echo $NXC_MACHINE_FILE
     - cat $NXC_MACHINE_FILE
     - ln -s $NXC_MACHINE_FILE $CI_PROJECT_DIR/nxc/NXC_MACHINE_FILE
-    - cd $CI_PROJECT_DIR/nxc
-    - ls
+    - cd $CI_PROJECT_DIR/$NXC_COMPO
     - ls build 
     - nxc start -m ./NXC_MACHINE_FILE
   artifacts:
@@ -54,7 +52,7 @@ test-nxc:
   tags:
     - g5k
   script:
-    - cd $CI_PROJECT_DIR/nxc
+    - cd $CI_PROJECT_DIR/$NXC_COMPO
     - nxc driver -t
     - nxc driver test_success.py
     #- nxc driver test_fail.py
