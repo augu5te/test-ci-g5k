@@ -8,6 +8,7 @@ build-nxc:
   tags:
     - g5k
   script:
+    - env
     - NXC_COMPO=nxc
     - nix --version
     - nxc --version
@@ -15,11 +16,11 @@ build-nxc:
     - nxc build -f g5k-nfs-store
     - pwd
     - ls -al
-    - cp -a build $CI_PROJECT_DIR/../../../../../var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
-  artifacts:
-    paths:
-      - nxc/build/*
-    expire_in: 1 hour
+    - mv build $CI_PROJECT_DIR/../../../../../var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
+  # artifacts:
+  #   paths:
+  #     - nxc/build/*
+  #   expire_in: 1 hour
  
 deploy-nxc:
   stage: deploy
@@ -37,13 +38,14 @@ deploy-nxc:
     - echo $NXC_MACHINE_FILE
     - cat $NXC_MACHINE_FILE
     - ln -s $NXC_MACHINE_FILE $CI_PROJECT_DIR/nxc/NXC_MACHINE_FILE
-    - cd $CI_PROJECT_DIR/$NXC_COMPO
-    - ls build 
+    - cd $CI_PROJECT_DIR/$NXC_COMPO 
+    - mv $VAR_DIR/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA build
     - nxc start -m ./NXC_MACHINE_FILE
-  artifacts:
-    paths:
-      - nxc/deploy/*
-    expire_in: 1 hour
+    - mv deploy $VAR_DIR/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
+  # artifacts:
+  #   paths:
+  #     - nxc/deploy/*
+  #   expire_in: 1 hour
     
 test-nxc:
   stage: test
@@ -53,6 +55,8 @@ test-nxc:
     - g5k
   script:
     - cd $CI_PROJECT_DIR/$NXC_COMPO
+    - VAR_DIR=$CI_PROJECT_DIR/../../../../../var
+    - mv $VAR_DIR/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
     - nxc driver -t
     - nxc driver test_success.py
     #- nxc driver test_fail.py
