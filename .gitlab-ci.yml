@@ -14,7 +14,9 @@ build-nxc:
     - nxc build -f g5k-nfs-store
     - pwd
     - ls -al
-    
+  artifacts:
+    paths:
+      - build/*
 deploy-nxc:
   stage: deploy
   dependencies: 
@@ -35,7 +37,10 @@ deploy-nxc:
     - ln -s $NXC_MACHINE_FILE $CI_PROJECT_DIR/nxc/NXC_MACHINE_FILE
     - cd $CI_PROJECT_DIR/nxc
     - nxc start -m ./NXC_MACHINE_FILE
-
+  artifacts:
+    paths:
+      - deploy/*
+      
 test-nxc:
   stage: test
   dependencies: 
