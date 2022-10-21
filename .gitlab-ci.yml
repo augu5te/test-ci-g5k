@@ -16,7 +16,9 @@ build-nxc:
     - ls -al
   artifacts:
     paths:
-      - build/*
+      - nxc/build/*
+    expire_in: 1 hour
+ 
 deploy-nxc:
   stage: deploy
   dependencies: 
@@ -36,11 +38,14 @@ deploy-nxc:
     - cat $NXC_MACHINE_FILE
     - ln -s $NXC_MACHINE_FILE $CI_PROJECT_DIR/nxc/NXC_MACHINE_FILE
     - cd $CI_PROJECT_DIR/nxc
+    - ls
+    - ls build 
     - nxc start -m ./NXC_MACHINE_FILE
   artifacts:
     paths:
-      - deploy/*
-      
+      - nxc/deploy/*
+    expire_in: 1 hour
+    
 test-nxc:
   stage: test
   dependencies: 
