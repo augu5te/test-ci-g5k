@@ -1,0 +1,24 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+
+build-A:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Build composition..."
+    - echo "Build complete."
+
+minimal-test-A:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Minimal tests... This will take about 60 seconds."
+    - sleep 20
+    - echo "Minimal OK"
+
+second-test-A:   # This job also runs in the test stage.
+  stage: test    # It can run at the same time as unit-test-job (in parallel).
+  script:
+    - echo "Second test... This will take about 10 seconds."
+    - sleep 10
+    - echo "No issues found."
+    - exit 127

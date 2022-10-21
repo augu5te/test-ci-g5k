@@ -1,0 +1,21 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+
+build-A:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Test build env"
+    - ~/.local/bin nix --version
+    - 
+    - echo "Build composition..."
+    - nxc build -f nixos-test-driver
+    - echo "Build complete."
+    - export yop="YOP"
+minimal-test-A:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Minimal tests... This will take about 60 seconds."
+    - echo "yop $YOP"
+    - echo "Minimal OK"
+
