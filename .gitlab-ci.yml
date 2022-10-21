@@ -24,7 +24,7 @@ deploy-nxc:
     - cat $VAR_DIR/NXC_OAR_JOB_ID
     - NXC_OAR_JOB_ID=$(cat $VAR_DIR/NXC_OAR_JOB_ID)
     - echo $NXC_OAR_JOB_ID
-    - NXC_MACHINE_FILES=$VAR_DIR/NXC_OAR_${NXC_OAR_JOB_ID}.stdout
+    - NXC_MACHINE_FILES="${VAR_DIR}/NXC_OAR_${NXC_OAR_JOB_ID}.stdout"
     #- NXC_MACHINE_FILES=$VAR_DIR/NXC_OAR_$(cat $VAR_DIR/NXC_OAR_JOB_ID).stdout
     - echo $NXC_MACHINE_FILE
     - cat $NXC_MACHINE_FILE
