@@ -12,15 +12,17 @@ build-nxc:
     - nxc --version
     - cd $CI_PROJECT_DIR/nxc
     - nxc build -f g5k-nfs-store
+    - pwd
+    - ls -al
     
 deploy-nxc:
   stage: deploy
   tags:
     - g5k
   script:
+    - echo $CI_PROJECT_DIR
     - VAR_DIR=$CI_PROJECT_DIR/../../../../../var
     - echo $VAR_DIR
-    - echo $CI_PROJECT_DIR
     - cat $VAR_DIR/NXC_OAR_JOB_ID
     - NXC_OAR_JOB_ID=$(cat $VAR_DIR/NXC_OAR_JOB_ID)
     - echo $NXC_OAR_JOB_ID
