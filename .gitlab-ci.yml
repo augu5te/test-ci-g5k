@@ -18,7 +18,7 @@ build-nxc:
 deploy-nxc:
   stage: deploy
   dependencies: 
-    - build
+    - build-nxc
   tags:
     - g5k
   script:
@@ -39,7 +39,7 @@ deploy-nxc:
 test-nxc:
   stage: test
   dependencies: 
-    - deploy
+    - deploy-nxc
   tags:
     - g5k
   script:
