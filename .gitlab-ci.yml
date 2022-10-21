@@ -43,6 +43,7 @@ test-nxc:
   tags:
     - g5k
   script:
+    - NXC_COMPO=nxc
     - cd $CI_PROJECT_DIR/$NXC_COMPO
     # restore deploy dir
     - mv $OAR_O_WORKDIR/var/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
