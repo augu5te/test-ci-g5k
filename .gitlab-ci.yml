@@ -14,6 +14,7 @@ build-nxc:
     - nxc build -f g5k-nfs-store
     - pwd
     - ls -al
+    - cp -a nxc/build $CI_PROJECT_DIR/../../../../../var/tmp/build_$CI_COMMIT_SHORT_SHA
   artifacts:
     paths:
       - nxc/build/*
@@ -56,4 +57,4 @@ test-nxc:
     - cd $CI_PROJECT_DIR/nxc
     - nxc driver -t
     - nxc driver test_success.py
-    - nxc driver test_fail.py
+    #- nxc driver test_fail.py
