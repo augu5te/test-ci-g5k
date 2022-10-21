@@ -8,21 +8,14 @@ build-nxc:
   tags:
     - g5k
   script:
-    - env
     - NXC_COMPO=nxc
     - nix --version
     - nxc --version
     - cd $CI_PROJECT_DIR/$NXC_COMPO
     - nxc build -f g5k-nfs-store
-    - pwd
-    - ls -al
     # save build dir
     - mv build $OAR_O_WORKDIR/var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
-  # artifacts:
-  #   paths:
-  #     - nxc/build/*
-  #   expire_in: 1 hour
- 
+
 deploy-nxc:
   stage: deploy
   dependencies: 
@@ -41,11 +34,7 @@ deploy-nxc:
     # deploy
     - nxc start -m $NXC_MACHINE_FILE
     # save deploy dir 
-    - mv deploy $OAR_O_WORKDIR/var/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
-  # artifacts:
-  #   paths:
-  #     - nxc/deploy/*
-  #   expire_in: 1 hour
+    - mv deploy $OAR_O_WORKDIR/var/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
     
 test-nxc:
   stage: test
@@ -55,7 +44,7 @@ test-nxc:
     - g5k
   script:
     - cd $CI_PROJECT_DIR/$NXC_COMPO
-    # restore deploy die
+    # restore deploy dir
     - mv $OAR_O_WORKDIR/var/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
     - nxc driver -t
     - nxc driver test_success.py
