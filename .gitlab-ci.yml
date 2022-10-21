@@ -19,6 +19,9 @@ deploy-nxc:
     - g5k
   script:
     - VAR_DIR=$CI_PROJECT_DIR/../../../../../var
+    - echo $VAR_DIR
+    - echo $CI_PROJECT_DIR
+    - cat $VAR_DIR/NXC_OAR_JOB_ID
     - NXC_MACHINE_FILES=$VAR_DIR/NXC_OAR_$(cat $VAR_DIR/NXC_OAR_JOB_ID).stdout
     - echo $NXC_MACHINE_FILE
     - cat $NXC_MACHINE_FILE
