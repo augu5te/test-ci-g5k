@@ -1,31 +1,37 @@
 stages:          # List of stages for jobs, and their order of execution
   - build
   - deploy
-  #- test
+  - test
 
-build-a:
-stage: build
-script:
-     - ls
-     - echo "yop"
-     - cd nxc
-     - ls
-     
-deploy-a:
-stage: deploy
-script:
-  - echo "yop"  
-   
-# build-nxc:
-#   stage: build
-#   script:
-#     - nix --version
-#     - nxc --version 
-#     - cd nxc
-#     - nxc build -f g5k-nfs-store
+build-nxc:
+  stage: build
+  tags:
+    - g5k
+  script:
+    - nix --version
+    - nxc --version
+    - cd $CI_PROJECT_DIR/nxc
+    - nxc build -f g5k-nfs-store
     
-# deploy-nxc:
-#   #- add test node file and 
-#   - nxc start -m var/NXC_OAR_$(cat var/NXC_OAR_JOB_ID).stdout
-# #      - nxc driver test_success.py
-# #      - nxc driver test_fail.py
+deploy-nxc:
+  stage: deploy
+  tags:
+    - g5k
+  script:
+    - VAR_DIR=$CI_PROJECT_DIR/../../../var
+    - NXC_MACHINE_FILES=$VAR_DIR/NXC_OAR_$(cat $VAR_DIR/NXC_OAR_JOB_ID).stdout
+    - echo $NXC_MACHINE_FILE
+    - cat $NXC_MACHINE_FILE
+    - cp $NXC_MACHINE_FILE $CI_PROJECT_DIR/nxc/NXC_MACHINE_FILE
+    - cd $CI_PROJECT_DIR/nxc
+    - nxc start -m ./NXC_MACHINE_FILE
+
+test-nxc:
+  stage: test
+  tags:
+    - g5k
+  script:
+    - cd $CI_PROJECT_DIR/nxc
+    - nxc driver -t
+    - nxc driver test_success.py
+    - nxc driver test_fail.py
