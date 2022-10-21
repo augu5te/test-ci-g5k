@@ -16,7 +16,8 @@ build-nxc:
     - nxc build -f g5k-nfs-store
     - pwd
     - ls -al
-    - mv build $CI_PROJECT_DIR/../../../../../var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
+    # save build dir
+    - mv build $OAR_O_WORKDIR/var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA
   # artifacts:
   #   paths:
   #     - nxc/build/*
@@ -30,18 +31,16 @@ deploy-nxc:
     - g5k
   script:
     - NXC_COMPO=nxc
-    - VAR_DIR=$CI_PROJECT_DIR/../../../../../var
-    - echo $VAR_DIR
-    - NXC_OAR_JOB_ID=$(cat $VAR_DIR/NXC_OAR_JOB_ID)
-    - echo $NXC_OAR_JOB_ID
-    - NXC_MACHINE_FILE=$VAR_DIR/NXC_OAR_$(cat $VAR_DIR/NXC_OAR_JOB_ID).stdout
-    - echo $NXC_MACHINE_FILE
-    - cat $NXC_MACHINE_FILE
-    - ln -s $NXC_MACHINE_FILE $CI_PROJECT_DIR/nxc/NXC_MACHINE_FILE
-    - cd $CI_PROJECT_DIR/$NXC_COMPO 
-    - mv $VAR_DIR/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA build
-    - nxc start -m ./NXC_MACHINE_FILE
-    - mv deploy $VAR_DIR/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
+    # extract NXC_OAR_JOB_ID
+    - NXC_OAR_JOB_ID=$(cat $OAR_O_WORKDIR/var/NXC_OAR_JOB_ID) && echo $NXC_OAR_JOB_ID
+    - NXC_MACHINE_FILE=$$AR_O_WORKDIR/var/NXC_OAR_$NXC_OAR_JOB_ID).stdout
+    - echo $NXC_MACHINE_FILE && cat $NXC_MACHINE_FILE
+    - cd $CI_PROJECT_DIR/$NXC_COMPO
+    # restore build dir 
+    - mv $OAR_O_WORKDIR/var/tmp/build_$NXC_COMPO_$CI_COMMIT_SHORT_SHA build
+    - nxc start -m $NXC_MACHINE_FILE
+    # save deploy dir 
+    - mv deploy $OAR_O_WORKDIR/var/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
   # artifacts:
   #   paths:
   #     - nxc/deploy/*
@@ -55,8 +54,8 @@ test-nxc:
     - g5k
   script:
     - cd $CI_PROJECT_DIR/$NXC_COMPO
-    - VAR_DIR=$CI_PROJECT_DIR/../../../../../var
-    - mv $VAR_DIR/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
+    # restore deploy die
+    - mv $OAR_O_WORKDIR/var/tmp/deploy_$NXC_COMPO_$CI_COMMIT_SHORT_SHA deploy
     - nxc driver -t
     - nxc driver test_success.py
     #- nxc driver test_fail.py
